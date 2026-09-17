@@ -1,0 +1,6 @@
+Test-Command: geome --help && geome --version && test -r /usr/share/man/man1/geome.1.gz
+Depends: @
+Restrictions: superficial
+
+Test-Command: make check GEOME_LIVE_TESTS=0
+Depends: @, @builddeps@, build-essential

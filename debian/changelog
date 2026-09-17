@@ -1,0 +1,6 @@
+geome (1.0.0-1) UNRELEASED; urgency=medium
+
+  * Initial local build of the public IP-geolocation command.
+  * Public release requires owner-approved licensing and maintainer identity.
+
+ -- Local Build <geome@localhost.localdomain>  Thu, 17 Sep 2026 12:00:00 +0000

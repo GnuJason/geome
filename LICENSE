@@ -1,0 +1,22 @@
+GEOME LICENSE DECISION
+
+The project owner has not selected or approved a license for this project.
+No open-source license or public redistribution permission is granted by this
+file. Do not publish source releases, binaries, or APT packages until the owner
+has supplied an approved license and verified the applicable rights.
+
+This is an explicit release decision record, not a software license. Local
+development and validation are performed at the requesting owner's direction.
+
+The dynamically linked dependencies have independent licenses:
+- libcurl: curl license, https://curl.se/docs/copyright.html
+- cJSON: MIT license, https://github.com/DaveGamble/cJSON/blob/master/LICENSE
+
+Those permissive dependency licenses allow linking and redistribution subject
+to their copyright and permission notices; they do not license geome itself.
+No dependency source is bundled here. Redistribution of dependency binaries
+must preserve their notices and satisfy their transitive dependency licenses.
+Debian's system library packages carry their own copyright files.
+
+The IP geolocation provider's service terms are separate from software
+licensing. Review https://ipwhois.io/terms before deployment or distribution.

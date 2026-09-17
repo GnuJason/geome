@@ -1,0 +1,18 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: geome
+Comment: Local validation package only. No public source location or approved
+ license has been supplied. Do not distribute this package before completing
+ the release decisions documented in docs/packaging.md and LICENSE.
+
+Files: *
+Copyright: Ownership must be confirmed by the project owner before release.
+License: License-Decision-Pending
+ No project license has been approved. No public redistribution permission
+ is granted by this metadata. This package is for owner-directed local
+ development and validation and must not be uploaded to any public archive.
+ .
+ libcurl and cJSON are dynamically linked system dependencies, not bundled
+ code. Their respective curl and MIT license notices are supplied by their
+ Debian packages in /usr/share/doc/libcurl4t64/copyright and
+ /usr/share/doc/libcjson1/copyright. The project owner must approve a project
+ license and confirm ownership before public release.

@@ -1,0 +1,16 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export GEOME_LIVE_TESTS = 0
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	dh_auto_build -- PREFIX=/usr PROGRAM=geome
+
+override_dh_auto_test:
+	dh_auto_test -- check
+
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/tmp -- PREFIX=/usr PROGRAM=geome

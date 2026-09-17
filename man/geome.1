@@ -1,0 +1,116 @@
+.TH GEOME 1 "2026-09-17" "geome" "User Commands"
+.SH NAME
+geome \- display approximate public IP-based location
+.SH SYNOPSIS
+.B geome
+.RI [ OPTION ]
+.SH DESCRIPTION
+.B geome
+uses the external HTTPS IP-geolocation service https://ipwho.is/ to locate
+the public IP address used by its request. It does not determine GPS or
+street-level location and does not discover the machine's physical position.
+No IP address argument is sent. No root privileges are needed.
+.PP
+Requests have a 5-second connection timeout, a 10-second total timeout,
+and a 1 MiB decompressed response limit. TLS peer and hostname verification
+are enabled. Redirects, retries, caching, and provider fallback are disabled.
+.SH OPTIONS
+Select at most one output mode. Repeating the same mode is permitted.
+Positional arguments and unknown options are errors.
+.TP
+.BR \-c ", " \-\-city
+Print only the city. A missing city is an error; the region is not substituted.
+.TP
+.B \-\-coords
+Print latitude,longitude with six fractional digits, no spaces or labels.
+Both coordinates must be present. There is no short option.
+.TP
+.BR \-j ", " \-\-json
+Print a single JSON object with all documented keys.
+.TP
+.BR \-f ", " \-\-full
+Print labeled location fields, with Unknown for unavailable values.
+.TP
+.BR \-h ", " \-\-help
+Show help without network access. Help takes precedence over version.
+.TP
+.BR \-V ", " \-\-version
+Show version without network access.
+.SH OUTPUT
+The default is City, RegionCode, CountryCode. Missing codes fall back to full
+names; unavailable components and their separators are omitted. At least one
+city, region, or country identifier is required in every successful response.
+.PP
+JSON keys are city, region, region_code, country, country_code, lat, lon, ip,
+and isp. Absent values are JSON null. Coordinates are numbers when present;
+numeric zero is valid. Latitude is in [-90,90], longitude in [-180,180].
+JSON key order is not an API guarantee. All successful outputs end with one
+newline, use no ANSI colors, and have no accuracy prose added to the data.
+.PP
+Full output labels are City, Region, Region code, Country, Country code,
+Latitude, Longitude, IP, and ISP, in that order. Diagnostics go to standard
+error and start with geome:. A write failure can leave partial output.
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 2
+Invalid command-line usage.
+.TP
+.B 3
+Network, DNS, connection, TLS, timeout, or truncated HTTP transfer failure.
+.TP
+.B 4
+Remote service rejection, rate limit, or HTTP failure.
+.TP
+.B 5
+Invalid, malformed, oversized, or incomplete location data.
+.TP
+.B 6
+Local memory or internal failure.
+.TP
+.B 7
+Output or diagnostic write failure, including a broken pipe.
+.SH PRIVACY
+Running the command sends a request from your public IP address to the provider.
+The provider necessarily receives the public IP used for that request. The
+request includes the geome name and version, an Accept header for JSON, and
+supported content encodings. DNS and network intermediaries see connection
+metadata; configured proxies can see additional information.
+.PP
+No user-created data, interface details, SSIDs, or MAC addresses are collected.
+The program does not retain, log, or transmit the result elsewhere. It writes
+the requested result to standard output and frees in-memory data on completion;
+terminal history, redirection, swap, or system crash dumps are outside its control.
+.SH ACCURACY
+VPNs, proxies, corporate gateways, Tor, mobile routing, and ISP address
+registration can produce a different city, region, or country. Never use IP
+geolocation for emergency response, safety decisions, legal residency,
+authentication, or precise tracking.
+.SH FILES
+None. Version 1 has no configuration or cache files.
+.SH ENVIRONMENT
+There are no application-specific runtime configuration variables.
+libcurl honors proxy variables including https_proxy, HTTPS_PROXY, all_proxy,
+ALL_PROXY, no_proxy, and NO_PROXY. Proxy routing can change the apparent location.
+Lowercase variants take precedence. Supported proxy schemes depend on libcurl.
+.SH EXAMPLES
+.nf
+geome
+geome --city
+geome --coords
+geome --json
+geome --full
+geome --help
+geome --version
+.fi
+.SH BUGS
+Provider availability, service limits, terms, and database accuracy can change.
+Report reproducible defects to the repository owner using the contribution
+instructions. Do not include your real public IP or unredacted location output.
+.SH SEE ALSO
+.BR curl (1),
+.BR libcurl (3)
+.PP
+https://ipwhois.io/terms

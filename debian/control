@@ -1,0 +1,16 @@
+Source: geome
+Section: utils
+Priority: optional
+Maintainer: Local Build <geome@localhost.localdomain>
+Build-Depends: debhelper-compat (= 13), pkg-config, libcurl4-openssl-dev, libcjson-dev (>= 1.7.13)
+Standards-Version: 4.7.2
+Rules-Requires-Root: no
+
+Package: geome
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ca-certificates
+Description: approximate public IP-based geolocation command
+ Query an external HTTPS IP-geolocation service and display the apparent
+ public location as compact text, city, coordinates, JSON, or labeled fields.
+ Results are approximate and can reflect VPN, proxy, or gateway locations.
+ No root privileges, configuration files, or local network discovery are used.

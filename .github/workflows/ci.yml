@@ -1,0 +1,103 @@
+name: build-and-package
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  GEOME_LIVE_TESTS: '0'
+
+jobs:
+  compiler:
+    name: ${{ matrix.cc }} build and offline tests
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        cc: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libcurl4-openssl-dev libcjson-dev clang groff-base
+      - name: Build and check
+        run: |
+          set -o pipefail
+          make check CC=${{ matrix.cc }} CFLAGS='-O2 -g -Werror' 2>&1 | tee compiler.log
+          make install DESTDIR="$PWD/build/stage"
+          test "$(stat -c %a build/stage/usr/local/bin/geome)" = 755
+          test "$(stat -c %a build/stage/usr/local/share/man/man1/geome.1)" = 644
+          groff -man -Tutf8 man/geome.1 >/dev/null
+          make uninstall DESTDIR="$PWD/build/stage"
+          test ! -e build/stage/usr/local/bin/geome
+      - uses: actions/upload-artifact@v4
+        if: always() && vars.GEOME_DISTRIBUTION_APPROVED == 'true'
+        with:
+          name: compiler-${{ matrix.cc }}-logs
+          path: compiler.log
+
+  sanitizers:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential clang libclang-rt-dev pkg-config libcurl4-openssl-dev libcjson-dev
+      - name: ASan and UBSan offline suite
+        env:
+          ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+        run: make sanitize CC=clang CFLAGS='-O1 -g -Werror'
+
+  debian-package:
+    runs-on: ubuntu-24.04
+    container: debian:trixie
+    steps:
+      - name: Install packaging dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates build-essential pkg-config libcurl4-openssl-dev libcjson-dev debhelper devscripts lintian man-db
+      - uses: actions/checkout@v4
+      - name: Build as an ordinary user
+        shell: bash
+        run: |
+          useradd --create-home builder
+          mkdir -p /tmp/geome-package/geome
+          cp -a . /tmp/geome-package/geome/
+          chown -R builder:builder /tmp/geome-package
+          set -o pipefail
+          su builder -c 'cd /tmp/geome-package/geome && DEB_CFLAGS_MAINT_APPEND=-Werror dpkg-buildpackage -us -uc -b' 2>&1 | tee package-build.log
+      - name: Lintian
+        shell: bash
+        env:
+          DISTRIBUTION_APPROVED: ${{ vars.GEOME_DISTRIBUTION_APPROVED }}
+        run: |
+          set -o pipefail
+          status=0
+          lintian /tmp/geome-package/geome_*.changes 2>&1 | tee lintian.log || status=$?
+          if [[ "$DISTRIBUTION_APPROVED" = true ]]; then
+            exit "$status"
+          fi
+          lintian --suppress-tags bogus-mail-host,copyright-without-copyright-notice,initial-upload-closes-no-bugs /tmp/geome-package/geome_*.changes
+      - name: Inspect and install package
+        shell: bash
+        run: |
+          dpkg-deb --contents /tmp/geome-package/geome_*.deb
+          apt-get install -y /tmp/geome-package/geome_*.deb
+          su builder -c 'geome --version && geome --help && MANPAGER=cat man geome >/dev/null'
+          apt-get remove -y geome
+      - uses: actions/upload-artifact@v4
+        if: always() && vars.GEOME_DISTRIBUTION_APPROVED == 'true'
+        with:
+          name: debian-package-and-logs
+          path: |
+            /tmp/geome-package/*.deb
+            /tmp/geome-package/*.buildinfo
+            /tmp/geome-package/*.changes
+            package-build.log
+            lintian.log
