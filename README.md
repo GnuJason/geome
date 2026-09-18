@@ -27,6 +27,97 @@ does not cache, log, retain, or forward results; it writes your selected output
 to stdout. Help and version never request the network. See
 [privacy details](docs/privacy.md), including proxy and OS-level caveats.
 
+## Recommended Installation Methods
+
+1. **Debian package (.deb):** use the GitHub Release package on a compatible
+   amd64 Debian/Ubuntu system.
+2. **APT repository (future):** no project APT repository is currently provided.
+3. **Source tarball build:** an official, first-class installation method,
+   recommended for Debian 12/LMDE and systems incompatible with the release `.deb`.
+4. **RPM package (future):** planned; no RPM release package is currently provided.
+
+The `.deb` and source tarball are available from
+[GitHub Releases](https://github.com/GnuJason/geome/releases/tag/v1.0.0).
+You do not need Git or a repository clone for either installation method.
+
+## Supported Platforms
+
+| Platform | Installation method and verification |
+| --- | --- |
+| Debian 12 | Source-tarball installation verified by the project owner on a Debian 12/LMDE system |
+| Linux Mint Debian Edition (LMDE) | Source build verified by the project owner on that same system |
+| Debian 13 (Trixie), amd64 | Package build, offline tests, and package installation verified |
+| Ubuntu 24.04, amd64 | Release `.deb` installation, help/version, and live JSON schema verified |
+| Other Ubuntu-family distributions | `.deb` installation when architecture and dependencies match; not individually tested |
+| General Linux distributions | Source build with a C11 compiler, GNU Make, pkg-config, libcurl, and cJSON; not all distributions tested |
+
+The v1.0.0 `.deb` depends on `libcurl4t64`. Debian 12 uses `libcurl4`, so use
+the source tarball there rather than forcing package installation. Ubuntu-family
+branding alone does not establish binary compatibility; the Ubuntu base and
+available library versions matter. Zorin OS has not been independently tested.
+
+## Debian Package Installation (.deb)
+
+Download the amd64 package from the release page, or use `wget`:
+
+```sh
+wget https://github.com/GnuJason/geome/releases/download/v1.0.0/geome_1.0.0-1_amd64.deb
+sudo apt update
+sudo apt install ./geome_1.0.0-1_amd64.deb
+geome --version
+```
+
+APT installs the required runtime dependencies. If it reports an unavailable
+dependency such as `libcurl4t64`, use the source method below; do not force the
+installation or replace system libraries manually. `wget` is only a download
+tool; a browser download works too. SHA-256 checksums are in the release notes.
+
+## Build From Source Tarball
+
+This is an **official installation method**, verified by the project owner on
+Debian 12 / Linux Mint Debian Edition. It builds against your system's libraries
+and does not require the release `.deb` or its `libcurl4t64` package dependency.
+
+Install build dependencies on Debian / Ubuntu:
+
+```sh
+sudo apt update
+sudo apt install build-essential pkg-config \
+  libcurl4-openssl-dev libcjson-dev
+```
+
+Then download, extract, build, install, and verify:
+
+```sh
+wget https://github.com/GnuJason/geome/releases/download/v1.0.0/geome-1.0.0.tar.gz
+tar -xvf geome-1.0.0.tar.gz
+cd geome-1.0.0
+make
+sudo make install
+geome --version
+```
+
+Build as your ordinary user; only the system-wide install needs elevated
+privileges. The default destinations are `/usr/local/bin/geome` and
+`/usr/local/share/man/man1/geome.1`. Ensure `/usr/local/bin` is on your PATH.
+From the extracted source directory, `sudo make uninstall` removes this install.
+For an unprivileged installation, see [Source Install and Uninstall](#source-install-and-uninstall).
+
+Other Linux distributions need equivalent development packages for a C11
+compiler, GNU Make, pkg-config, libcurl, and cJSON, plus a trusted CA store at
+runtime. cJSON 1.7.13 or newer is required. If `libcjson-dev` is unavailable,
+install cJSON separately using your distribution's equivalent package or the
+[upstream cJSON build instructions](https://github.com/DaveGamble/cJSON#building).
+Its headers, library, and `libcjson.pc` must be discoverable by the compiler,
+runtime linker, and pkg-config; a custom prefix may require `PKG_CONFIG_PATH`
+and system linker configuration. No cJSON source is bundled with geome.
+
+## RPM Installation
+
+RPM support is planned. No RPM package or RPM repository is currently supplied.
+On RPM-based Linux distributions, use the source tarball with the distribution's
+equivalent development packages until an official RPM is released.
+
 ## Examples
 
 The following is **synthetic documentation data**, not an assertion about your
@@ -73,9 +164,10 @@ coordinate, not a missing-value marker. All modes require at least one meaningfu
 city, region, or country identifier. Provider strings containing terminal control
 characters, invalid UTF-8, or embedded NUL characters are rejected.
 
-## Dependencies and Build
+## Developer Build
 
-On Debian 13 or a supported Ubuntu release:
+For a repository checkout, install these additional packaging and validation
+tools on Debian / Ubuntu. They are not all needed for a source-tarball install:
 
 ```sh
 sudo apt update
@@ -167,7 +259,7 @@ make uninstall PREFIX="$HOME/.local"
 Install honors `DESTDIR`, `PREFIX`, `BINDIR`, and `MANDIR`; the Makefile never
 invokes sudo. Put `$HOME/.local/bin` in your PATH when using user-local installs.
 
-## Debian Package
+## Building a Debian Package
 
 ```sh
 dpkg-buildpackage -us -uc -b
@@ -188,6 +280,26 @@ a local build nor a personal repository grants that status. Do not assume
 `apt install geome` works without a configured repository carrying this project.
 
 ## Exit Codes and Troubleshooting
+
+### Missing cJSON Headers
+
+If compilation reports:
+
+```text
+fatal error: cjson/cJSON.h: No such file or directory
+```
+
+Install the cJSON development package (`sudo apt install libcjson-dev` on
+Debian / Ubuntu). If unavailable, build and install cJSON from source as
+described in [Build From Source Tarball](#build-from-source-tarball), then rerun:
+
+```sh
+make
+```
+
+The runtime library alone does not provide development headers.
+
+### Exit Codes
 
 | Status | Meaning | Action |
 | --- | --- | --- |
