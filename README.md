@@ -5,15 +5,13 @@ It is a Linux-first C11 command-line client of the external HTTPS service
 https://ipwho.is/. It does not determine GPS, street-level, or physical location.
 
 **Identity:** upstream project, executable, repository, Debian binary package,
-and man page are all named **geome**. No relationship to another distribution
-package is declared. Namespace availability must be reviewed before publication.
-This project is not in Debian or Ubuntu's official repositories.
+and man page are all named **geome**. The source repository and homepage are
+https://github.com/GnuJason/geome. No relationship to another distribution
+package is declared. This project is not in Debian or Ubuntu's official repositories.
 
-**Release status:** the implementation and local package build are usable, but
-public redistribution is blocked until the owner approves a license, confirms
-copyright ownership, supplies maintainer details, and reviews provider terms.
-See [LICENSE](LICENSE) and [packaging](docs/packaging.md). This repository does
-not currently claim to be open source.
+**License:** geome is released under the [MIT License](LICENSE), copyright 2026
+GnuJason. Provider terms remain a separate operational responsibility; see
+[packaging](docs/packaging.md).
 
 ## Accuracy and Privacy
 

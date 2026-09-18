@@ -1,6 +1,6 @@
 # Debian Packaging
 
-## Identity and Release Gates
+## Identity
 
 The source package, binary package, upstream project, executable, and man page
 are all `geome`. The package installs `/usr/bin/geome` and
@@ -13,23 +13,17 @@ makes no claim that the name is reserved or accepted by Debian or Ubuntu.
 rules select `geome` explicitly; changing distribution identity requires reviewing
 install manifests, man-page text, and metadata as a packaging decision.
 
-The following owner decisions block a **public release**, not local validation:
+The project is MIT licensed, copyright 2026 GnuJason. The Debian Maintainer and
+upstream contact are GnuJason <gnujason@mailfence.com>. The authoritative source,
+Homepage, Vcs-Browser, and Vcs-Git are https://github.com/GnuJason/geome.
+libcurl's curl license and cJSON's MIT license permit dynamic linking; they remain
+separate dependencies with their own copyright notices. No dependency source is
+bundled. Review transitive dependencies when distributing a combined image.
 
-1. Approve an actual project license and confirm copyright ownership/year.
-   LICENSE currently grants no public redistribution permission. The curl and MIT
-   dependency licenses permit linking with notice obligations but do not license
-   this project. Review transitive dependencies for any bundled distribution.
-2. Replace the explicitly local-build identity `Local Build
-   <geome@localhost.localdomain>` in control and changelog with the responsible
-   maintainer's real, consented name and reachable email. It is not a fabricated
-   person and cannot be used for an archive upload.
-3. Supply the authoritative public source repository, upstream contact, Homepage,
-   and Vcs fields after those locations exist. None are invented here.
-4. Review current https://ipwhois.io/terms, plan restrictions, provider privacy,
-   rate limits, and intended deployment/distribution model. The free endpoint
-   and permissions must not be assumed to remain unchanged.
-5. Review namespace availability and replace `UNRELEASED` with an appropriate
-   distribution only when a reviewed, signed release is ready.
+Before submitting to a distribution archive, review current
+https://ipwhois.io/terms, plan restrictions, provider privacy, rate limits, and
+the intended distribution model. Provider terms, availability, and permissions
+are external operational requirements that can change.
 
 The source uses `3.0 (quilt)`, debhelper compatibility 13, architecture `any`,
 generated shlibs/misc dependencies, and a CA certificate runtime dependency.
@@ -79,14 +73,14 @@ review or sponsorship, and archive acceptance. None of those steps occurs merely
 by running `dpkg-buildpackage`. Do not advertise public `apt install geome`
 availability without naming the configured repository that actually carries it.
 
-The CI artifact upload is disabled until the owner explicitly sets the repository
-variable `GEOME_DISTRIBUTION_APPROVED` to `true` after resolving redistribution
-rights. Local build artifacts remain available for validation. CI tests and lintian
-still run without that variable.
+CI runs the full offline test and package suite, lintian, and uploads build logs
+and package artifacts for pushes and pull requests. Live tests remain disabled.
 
 ## Observed Lintian Findings
 
-Debian trixie lintian 2.122.0 reported these findings on the local binary build:
+The pre-release local package used temporary metadata and had the following
+historical lintian findings. They are expected to be resolved by the v1.0.0
+metadata below; rerun lintian after the release package is built.
 
 - `bogus-mail-host`: the explicit local-only address appears as Maintainer in
    the binary/debug packages and Maintainer/Changed-By in the changes file (four
@@ -97,9 +91,6 @@ Debian trixie lintian 2.122.0 reported these findings on the local binary build:
    Intent To Package bug. An archive submission should file and reference a real
    ITP; a private local package need not invent one (one warning).
 
-No lintian overrides are installed in the package. CI displays and preserves the
-unfiltered report, then, for unapproved local builds only, repeats lintian with
-exactly these three documented tags suppressed. Any other lintian error still
-fails CI. With distribution approval enabled, the unfiltered lintian exit status
-is mandatory. Warnings must be reviewed before public release. Absence of a
-lintian error is not a license grant or an archive acceptance decision.
+No lintian overrides are installed. CI fails on the unfiltered lintian exit
+status. An absence of lintian findings does not by itself establish archive
+acceptance; Debian and Ubuntu retain their independent review processes.

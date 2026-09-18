@@ -61,12 +61,10 @@ including the offline suite. Its contents include the executable with mode 0755
 and compressed section-1 man page. Installation, unprivileged help/version/man
 smoke tests, and removal passed in a fresh Debian trixie container.
 
-Lintian reported four `bogus-mail-host` errors from the explicitly local-only
-identity and two warnings: `copyright-without-copyright-notice` and
-`initial-upload-closes-no-bugs`. These are documented owner/release decisions,
-not silently overridden in the package. Rerunning with only those named tags
-suppressed passed with no additional findings. See packaging.md for remediation
-and CI's strict approved-release policy.
+Pre-release lintian findings from temporary local metadata are historical only.
+The v1.0.0 release uses the approved MIT license, GnuJason maintainer identity,
+and canonical GitHub source metadata. The current lintian result is recorded
+after the release package rebuild.
 
 One explicitly enabled live request to `https://ipwho.is/` passed the JSON schema
 and coordinate-range validation. TLS verification stayed enabled. No real IP or
@@ -184,5 +182,5 @@ packages, logs, staging directories, and source archives are excluded from the
 source inventory. The application architecture is CLI -> HTTPS -> parser -> owned
 Location -> formatter; details and ownership rules are in architecture.md.
 
-Public release requires the owner decisions in packaging.md. LICENSE is an
-explicit decision record, not an approved open-source license.
+geome is released under the MIT License, copyright 2026 GnuJason. Provider terms
+remain external operational requirements; see packaging.md.

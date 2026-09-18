@@ -1,7 +1,10 @@
 Source: geome
 Section: utils
 Priority: optional
-Maintainer: Local Build <geome@localhost.localdomain>
+Maintainer: GnuJason <gnujason@mailfence.com>
+Homepage: https://github.com/GnuJason/geome
+Vcs-Browser: https://github.com/GnuJason/geome
+Vcs-Git: https://github.com/GnuJason/geome.git
 Build-Depends: debhelper-compat (= 13), pkg-config, libcurl4-openssl-dev, libcjson-dev (>= 1.7.13)
 Standards-Version: 4.7.2
 Rules-Requires-Root: no

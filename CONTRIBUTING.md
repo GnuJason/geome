@@ -1,7 +1,7 @@
 # Contributing
 
-This repository is not yet licensed for public redistribution. Obtain the
-owner's approval before sharing changes or publishing artifacts. See LICENSE.
+geome is licensed under the MIT License. Contributions are accepted under that
+license. See [LICENSE](LICENSE).
 
 ## Build and Test
 

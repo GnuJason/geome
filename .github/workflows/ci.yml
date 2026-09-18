@@ -35,7 +35,7 @@ jobs:
           make uninstall DESTDIR="$PWD/build/stage"
           test ! -e build/stage/usr/local/bin/geome
       - uses: actions/upload-artifact@v4
-        if: always() && vars.GEOME_DISTRIBUTION_APPROVED == 'true'
+        if: always()
         with:
           name: compiler-${{ matrix.cc }}-logs
           path: compiler.log
@@ -74,16 +74,9 @@ jobs:
           su builder -c 'cd /tmp/geome-package/geome && DEB_CFLAGS_MAINT_APPEND=-Werror dpkg-buildpackage -us -uc -b' 2>&1 | tee package-build.log
       - name: Lintian
         shell: bash
-        env:
-          DISTRIBUTION_APPROVED: ${{ vars.GEOME_DISTRIBUTION_APPROVED }}
         run: |
           set -o pipefail
-          status=0
-          lintian /tmp/geome-package/geome_*.changes 2>&1 | tee lintian.log || status=$?
-          if [[ "$DISTRIBUTION_APPROVED" = true ]]; then
-            exit "$status"
-          fi
-          lintian --suppress-tags bogus-mail-host,copyright-without-copyright-notice,initial-upload-closes-no-bugs /tmp/geome-package/geome_*.changes
+          lintian /tmp/geome-package/geome_*.changes 2>&1 | tee lintian.log
       - name: Inspect and install package
         shell: bash
         run: |
@@ -92,7 +85,7 @@ jobs:
           su builder -c 'geome --version && geome --help && MANPAGER=cat man geome >/dev/null'
           apt-get remove -y geome
       - uses: actions/upload-artifact@v4
-        if: always() && vars.GEOME_DISTRIBUTION_APPROVED == 'true'
+        if: always()
         with:
           name: debian-package-and-logs
           path: |
