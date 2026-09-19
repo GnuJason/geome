@@ -1,0 +1,15 @@
+<project name="home:GnuJason:geome">
+  <title>Geome</title>
+  <description>Lightweight CLI tool for geolocation and network metadata.</description>
+  <person userid="GnuJason" role="maintainer"/>
+  <build>
+    <enable/>
+  </build>
+  <publish>
+    <enable/>
+  </publish>
+  <repository name="openSUSE_Tumbleweed">
+    <path project="openSUSE:Tumbleweed" repository="standard"/>
+    <arch>x86_64</arch>
+  </repository>
+</project>
