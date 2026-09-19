@@ -16,9 +16,9 @@ install manifests, man-page text, and metadata as a packaging decision.
 The project is MIT licensed, copyright 2026 GnuJason. The Debian Maintainer and
 upstream contact are GnuJason <gnujason@mailfence.com>. The authoritative source,
 Homepage, Vcs-Browser, and Vcs-Git are https://github.com/GnuJason/geome.
-libcurl's curl license and cJSON's MIT license permit dynamic linking; they remain
-separate dependencies with their own copyright notices. No dependency source is
-bundled. Review transitive dependencies when distributing a combined image.
+libcurl and cJSON are dynamically linked system dependencies; no dependency
+source is bundled. Review transitive dependencies when distributing a combined
+image.
 
 Before submitting to a distribution archive, review current
 https://ipwhois.io/terms, plan restrictions, provider privacy, rate limits, and

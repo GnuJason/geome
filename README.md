@@ -325,10 +325,10 @@ total timeout, and a 1 MiB decompressed-response cap. There is no caching,
 configuration, provider fallback, explicit-IP lookup, or precise positioning.
 Provider failures and database inaccuracies are outside this client's control.
 
-Transport uses [libcurl](https://curl.se/) (curl license), parsing and serialization
-use [cJSON](https://github.com/DaveGamble/cJSON) (MIT), and location data comes from
-[IPWHOIS.io](https://ipwhois.io/). Dependency licenses were reviewed for linking
-compatibility; see LICENSE. No provider documentation or database is bundled.
+Transport uses [libcurl](https://curl.se/), parsing and serialization use
+[cJSON](https://github.com/DaveGamble/cJSON), and location data comes from
+[IPWHOIS.io](https://ipwhois.io/). These dependencies are dynamically linked;
+no provider documentation or database is bundled.
 Provider [terms](https://ipwhois.io/terms), [privacy policy](https://ipwhois.io/privacy),
 plan restrictions, fair-use rules, and rate limits can change. No free-plan
 availability, commercial-use permission, or precise retry time is promised.
